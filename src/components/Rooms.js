@@ -16,12 +16,12 @@ const Rooms = function() {
     }
     
     return (
-        <table>
+        <table className="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Max visitors count</th>
-                    <th>Actions</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Max visitors count</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,7 +30,7 @@ const Rooms = function() {
                    <td>{r.name}</td>
                    <td>{r.maxVisitorsCount}</td>
                    <td>
-                       <Link to={`/bookings/${r.id}`}>Book</Link>
+                       <Link className="btn btn-primary" to={`/bookings/${r.id}`}>Book</Link>
                    </td>
                </tr>)} 
             </tbody>

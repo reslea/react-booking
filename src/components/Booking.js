@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
-import './Booking.css';
-
 export default function Booking()
 {
     const { roomId } = useParams();
