@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Rooms = function() {
     const [rooms, setRooms] = useState(null);
@@ -15,11 +16,25 @@ const Rooms = function() {
     }
     
     return (
-        <div>
-            <ul> {rooms.map(r => 
-               <li key={r.id}>{r.name}</li>)} 
-            </ul>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Max visitors count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {rooms.map(r => 
+               <tr key={r.id}>
+                   <td>{r.name}</td>
+                   <td>{r.maxVisitorsCount}</td>
+                   <td>
+                       <Link to={`/bookings/${r.id}`}>Book</Link>
+                   </td>
+               </tr>)} 
+            </tbody>
+        </table>
     )
 }
 
