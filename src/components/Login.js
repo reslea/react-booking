@@ -21,7 +21,10 @@ export default function Login()
             }
          })
             .then(respose => respose.json())
-            .then(data => setToken(data.token));
+            .then(data => {
+                localStorage.setItem('token', data.token);
+                setToken(data.token);
+            });
     }
 
     if (token) {

@@ -17,7 +17,7 @@ export default function Booking()
         const booking = { roomId: parseInt(roomId), dateFrom, dateTo, visitorsCount };
         const strBooking = JSON.stringify(booking);
         
-        fetch('https://localhost:7286/api/bookings', 
+        fetch('https://localhost:7286/api/booking', 
             { 
                 method: 'Post', 
                 body: strBooking,

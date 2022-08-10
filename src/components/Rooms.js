@@ -1,13 +1,50 @@
+import { HubConnectionBuilder } from "@microsoft/signalr";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import Room from "./Room";
 
 const Rooms = function() {
     const [rooms, setRooms] = useState(null);
+    const [bookings, setBookings] = useState([]);
+
+    const [connection, setConnection] = useState(null);
+
+    // создание SignalR соединения
+    useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+        .withUrl("https://localhost:7286/hubs/booking")
+        .withAutomaticReconnect()
+        .build();
+
+    setConnection(newConnection);
+    }, []);
 
     useEffect(() => {
-        fetch('https://localhost:7286/api/rooms')
+        if (!connection) return;
+
+        connection.on("RoomBooked", (bookingJson) => {
+            console.log(bookingJson);
+            setBookings(prevBookings => 
+                [...prevBookings, JSON.parse(bookingJson)]);
+        });
+        console.log('subscribed to messages');
+
+        connection.start().then(() => console.log('connection started'));
+      }, [connection]);
+
+    // загрузить комнаты
+    useEffect(() => {
+        fetch('https://localhost:7286/api/room', { 
+            headers: { 'authorization': `Bearer ${localStorage.getItem('token')}` }})
             .then(response => response.json())
             .then(data => setRooms(data));
+    }, []);
+
+    // загрузить букинги
+    useEffect(() => {
+        // const today = new Date().toLocaleDateString("en-US");
+        fetch(`https://localhost:7286/api/booking`)
+        .then(response => response.json())
+        .then(data => setBookings(data));
     }, []);
 
     if (rooms === null)
@@ -26,13 +63,8 @@ const Rooms = function() {
             </thead>
             <tbody>
             {rooms.map(r => 
-               <tr key={r.id}>
-                   <td>{r.name}</td>
-                   <td>{r.maxVisitorsCount}</td>
-                   <td>
-                       <Link className="btn btn-primary" to={`/bookings/${r.id}`}>Book</Link>
-                   </td>
-               </tr>)} 
+                <Room key={r.id} room={r} bookings={bookings.filter(b => b.roomId === r.id)} />
+            )} 
             </tbody>
         </table>
     )
