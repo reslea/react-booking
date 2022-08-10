@@ -6,12 +6,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Rooms from './components/Rooms';
 import Booking from './components/Booking';
 import Login from './components/Login';
+import TodoList from './components/TodoList';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <Routes>
-            <Route path="/" element={<Rooms />} />
+            <Route path="/" element={<TodoList />} />
             <Route path="/rooms" element={<Rooms />} />
             <Route path="/bookings" element={<Booking/>}>
                 <Route path=":roomId" element={<Booking />} />
