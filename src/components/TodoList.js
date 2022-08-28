@@ -20,6 +20,7 @@ function todoReducer(prevState, action) {
 }
 
 export default function TodoList() {
+    console.log('render');
     const [todos, dispatch] = useReducer(todoReducer, []);
 
     const [newTodoTitle, setNewTodoTitle] = useState('');
@@ -55,6 +56,7 @@ export default function TodoList() {
             <ul>
                 {todos.map(t => 
                     <Todo 
+                        key={t.id}
                         id={t.id} 
                         title={t.title} 
                         isDone={t.isDone} 
@@ -67,9 +69,9 @@ export default function TodoList() {
 }
 
 function Todo({ id, title, isDone, onDelete, onToggle }) {
+    console.log('todo render:', id)
     return (
         <li 
-            key={id} 
             style={isDone ? {'textDecorationLine': 'line-through'} : {}}
         >
             <span onClick={() => onToggle(id)}>{title}</span>

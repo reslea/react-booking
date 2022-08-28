@@ -1,51 +1,18 @@
-import { HubConnectionBuilder } from "@microsoft/signalr";
-import { useEffect, useState } from "react";
+import useFetch from "../hooks/useFetch";
+import useSignalr from "../hooks/useSignalr";
 import Room from "./Room";
 
 const Rooms = function() {
-    const [rooms, setRooms] = useState(null);
-    const [bookings, setBookings] = useState([]);
+    const [rooms] = useFetch('https://localhost:7286/api/room');
 
-    const [connection, setConnection] = useState(null);
+    const [bookings, setBookings] = useFetch('https://localhost:7286/api/booking');
 
-    // создание SignalR соединения
-    useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-        .withUrl("https://localhost:7286/hubs/booking")
-        .withAutomaticReconnect()
-        .build();
-
-    setConnection(newConnection);
-    }, []);
-
-    useEffect(() => {
-        if (!connection) return;
-
-        connection.on("RoomBooked", (bookingJson) => {
-            console.log(bookingJson);
+    useSignalr("https://localhost:7286/hubs/booking", {
+        "RoomBooked": (bookingJson) => {
             setBookings(prevBookings => 
                 [...prevBookings, JSON.parse(bookingJson)]);
-        });
-        console.log('subscribed to messages');
-
-        connection.start().then(() => console.log('connection started'));
-      }, [connection]);
-
-    // загрузить комнаты
-    useEffect(() => {
-        fetch('https://localhost:7286/api/room', { 
-            headers: { 'authorization': `Bearer ${localStorage.getItem('token')}` }})
-            .then(response => response.json())
-            .then(data => setRooms(data));
-    }, []);
-
-    // загрузить букинги
-    useEffect(() => {
-        // const today = new Date().toLocaleDateString("en-US");
-        fetch(`https://localhost:7286/api/booking`)
-        .then(response => response.json())
-        .then(data => setBookings(data));
-    }, []);
+        },
+    });
 
     if (rooms === null)
     {
@@ -63,7 +30,7 @@ const Rooms = function() {
             </thead>
             <tbody>
             {rooms.map(r => 
-                <Room key={r.id} room={r} bookings={bookings.filter(b => b.roomId === r.id)} />
+                <Room key={r.id} room={r} bookings={bookings?.filter(b => b.roomId === r.id)} />
             )} 
             </tbody>
         </table>
