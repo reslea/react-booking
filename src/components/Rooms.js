@@ -1,13 +1,14 @@
+import { apiUrl } from "../constants";
 import useFetch from "../hooks/useFetch";
 import useSignalr from "../hooks/useSignalr";
 import Room from "./Room";
 
 const Rooms = function() {
-    const [rooms] = useFetch('https://localhost:7286/api/room');
+    const [rooms] = useFetch(`${apiUrl}/api/room`);
 
-    const [bookings, setBookings] = useFetch('https://localhost:7286/api/booking');
+    const [bookings, setBookings] = useFetch(`${apiUrl}/api/booking`);
 
-    useSignalr("https://localhost:7286/hubs/booking", {
+    useSignalr(`${apiUrl}/hubs/booking`, {
         "RoomBooked": (bookingJson) => {
             setBookings(prevBookings => 
                 [...prevBookings, JSON.parse(bookingJson)]);

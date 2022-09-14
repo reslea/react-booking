@@ -8,7 +8,7 @@ export default function useFetch(url) {
           headers: { 'authorization': `Bearer ${localStorage.getItem('token')}` }})
           .then(response => response.json())
           .then(receivedData => setData(receivedData));
-  }, []);
+  }, [url]);
 
   return [data, setData];
 }
